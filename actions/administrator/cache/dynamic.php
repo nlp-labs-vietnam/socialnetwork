@@ -74,7 +74,18 @@ if($status == 'enabled') {
 		}
 }
 
-$template = '<?php
+$settings = array(
+		'status'   => (string) $status,
+		'type'     => (string) $type,
+		'host'     => (string) $host,
+		'port'     => (string) $port,
+		'username' => (string) $username,
+		'password' => (string) $password,
+);
+
+$exported_settings = var_export($settings, true);
+
+$template ='<?php
 /**
  * Open Source Social Network
  *
@@ -85,18 +96,11 @@ $template = '<?php
  * @link      https://www.opensource-socialnetwork.org/
  */
 
-$Ossn->dynamic_cache_settings = array(
-		"status"   => "'.$status.'",
-		"type"     => "'.$type.'",
-		"host"     => "'.$host.'",
-		"port"     => "'.$port.'",
-		"username" => "'.$username.'",
-		"password" => "'.$password.'",
-);';
+$Ossn->dynamic_cache_settings = ' .$exported_settings .';';
 
-if(file_put_contents(ossn_route()->configs . 'ossn.config.dcache.php', $template)){
-		ossn_trigger_message(ossn_print('cache:enabled'), 'success');	
+if(file_put_contents(ossn_route()->configs . 'ossn.config.dcache.php', $template)) {
+		ossn_trigger_message(ossn_print('cache:enabled'), 'success');
 } else {
-		ossn_trigger_message(ossn_print('cache:disabled'), 'success');	
+		ossn_trigger_message(ossn_print('cache:disabled'), 'success');
 }
 redirect(REF);
